@@ -6,13 +6,28 @@ from PIL import Image, ImageDraw, ImageFont
 def generate_text():
     print("Generating Image")
 
-    text = "Hello World"
+    text = "hello world"
     page_size = (800, 600)
+    font_size = 128
 
     image = create_image(page_size)
-    font = create_font(text)
-    origin = find_centered_origin(text, font, page_size)
-    draw_text(text, image, font, origin)
+    font = ImageFont.truetype("Sophia.ttf", font_size)
+    left_font = ImageFont.truetype("SophiaLeft.ttf", font_size)
+    right_font = ImageFont.truetype("SophiaRight.ttf", font_size)
+
+    x, y = find_centered_origin(text, font, page_size)
+
+    first_letter = text[0]
+    middle_text = text[1:-1]
+    last_letter = text[-1]
+
+    middle_text_x = x + font.getsize(first_letter)[0]
+    last_letter_x = middle_text_x + font.getsize(middle_text)[0]
+
+    draw_text(first_letter, image, left_font, x, y)
+    draw_text(middle_text, image, font, middle_text_x, y)
+    draw_text(last_letter, image, right_font, last_letter_x, y)
+
     image.save("output.png")
 
 
@@ -22,17 +37,10 @@ def create_image(page_size: (int, int)):
     image_color = (255, 255, 255)
     return Image.new(image_mode, image_size, image_color)
 
-
-def create_font(text: str):
-    font_size = 128
-    font = ImageFont.truetype("Sophia.ttf", font_size)
-    return font
-
-
-def draw_text(text: str, image: Image, font: ImageFont, origin: (int, int)):
+def draw_text(text: str, image: Image, font: ImageFont, x: int, y: int):
     draw = ImageDraw.Draw(image)
     text_color = (0, 0, 0)
-    draw.text(origin, text, fill=text_color, font=font)
+    draw.text((x, y), text, fill=text_color, font=font)
 
 
 def find_centered_origin(text: str, font: ImageFont, page_size: (int, int)):
