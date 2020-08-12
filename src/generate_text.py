@@ -1,13 +1,23 @@
 #!/usr/bin/env python3
 
 from PIL import Image, ImageDraw, ImageFont
+import sys
 
 
 def generate_text():
-    print("Generating Image")
 
-    text = "hello world"
-    page_size = (800, 600)
+    if len(sys.argv) != 2:
+        print("Requires exactly one argument for the text to generate.")
+        exit(1)
+
+    text = sys.argv[1]
+
+    if len(text) < 2:
+        print("Text length must be at least 2 characters.")
+        exit(1)
+
+    print("Generating Image")
+    page_size = (800, 240)
     font_size = 128
 
     image = create_image(page_size)
